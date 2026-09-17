@@ -1,0 +1,19 @@
+digraph pastafarianism {
+ordering=out;
+graph [fontname="times-roman"];
+node [fontname="times-roman"];
+edge [fontname="times-roman"];
+"Demo Tree" [label="Demo Tree", shape=octagon, style=filled, fillcolor=cyan, fontsize=9, fontcolor=black];
+EveryN [label=EveryN, shape=ellipse, style=filled, fillcolor=gray, fontsize=9, fontcolor=black];
+"Demo Tree" -> EveryN;
+Sequence [label="Ⓜ Sequence", shape=box, style=filled, fillcolor=orange, fontsize=9, fontcolor=black];
+"Demo Tree" -> Sequence;
+Guard [label=Guard, shape=ellipse, style=filled, fillcolor=gray, fontsize=9, fontcolor=black];
+Sequence -> Guard;
+Periodic [label=Periodic, shape=ellipse, style=filled, fillcolor=gray, fontsize=9, fontcolor=black];
+Sequence -> Periodic;
+Finisher [label=Finisher, shape=ellipse, style=filled, fillcolor=gray, fontsize=9, fontcolor=black];
+Sequence -> Finisher;
+Idle [label=Idle, shape=ellipse, style=filled, fillcolor=gray, fontsize=9, fontcolor=black];
+"Demo Tree" -> Idle;
+}
