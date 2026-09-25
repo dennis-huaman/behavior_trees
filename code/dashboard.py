@@ -17,7 +17,7 @@ class Node1(py_trees.behaviour.Behaviour):
             key="current_speed", access=py_trees.common.Access.WRITE
         )
         self.blackboard.register_key(
-            key="maximun_speed", access=py_trees.common.Access.READ
+            key="maximum_speed", access=py_trees.common.Access.READ
         )
         self.blackboard.register_key(key="status", access=py_trees.common.Access.READ)
 
@@ -25,11 +25,13 @@ class Node1(py_trees.behaviour.Behaviour):
         try:
             c_speed = self.blackboard.current_speed
             self.blackboard.current_speed = c_speed + 0.1
-            status = self.blackboard.status
+            success_indicator = self.blackboard.status
+            print(f"{success_indicator}-.-.-.-.-.-")
         except KeyError:
+            success_indicator = self.blackboard.status
             pass
 
-        if status == "success":
+        if success_indicator == "success":
             return py_trees.common.Status.SUCCESS
         else:
             return py_trees.common.Status.FAILURE
@@ -39,28 +41,26 @@ class Node2(py_trees.behaviour.Behaviour):
     def __init__(self, name: str):
         super().__init__(name)
 
-        self.data_blackboard = self.attach_blackboard_client()
-        self.data_blackboard.register_key(
+        self.blackboard = self.attach_blackboard_client()
+        self.blackboard.register_key(
             key="maximum_speed", access=py_trees.common.Access.READ
         )
-        self.data_blackboard.register_key(
+        self.blackboard.register_key(
             key="current_speed", access=py_trees.common.Access.READ
         )
-        self.data_blackboard.register_key(
-            key="status", access=py_trees.common.Access.WRITE
-        )
+        self.blackboard.register_key(key="status", access=py_trees.common.Access.WRITE)
 
-        self.data_blackboard.status = "success"
+        self.blackboard.status = "success"
 
     def update(self) -> py_trees.common.Status:
 
-        print(self.data_blackboard)
+        print(self.blackboard)
 
-        if self.data_blackboard.current_speed > self.data_blackboard.maximum_speed:
-            self.data_blackboard.status = "failure"
+        if self.blackboard.current_speed > self.blackboard.maximum_speed:
+            self.blackboard.status = "failure"
             return py_trees.common.Status.FAILURE
         else:
-            self.data_blackboard.status = "success"
+            self.blackboard.status = "success"
             return py_trees.common.Status.SUCCESS
 
 
@@ -78,28 +78,26 @@ def create_root() -> py_trees.behaviour.Behaviour:
 
 def main() -> None:
     py_trees.logging.level = py_trees.logging.Level.DEBUG
-
     blackboard = py_trees.blackboard.Client()
     blackboard.register_key(key="maximum_speed", access=py_trees.common.Access.WRITE)
     blackboard.register_key(key="current_speed", access=py_trees.common.Access.WRITE)
-    blackboard.maximum_speed = 2.5
-    blackboard.current_speed = 0.5
+    blackboard.maximum_speed = 0.5
+    blackboard.current_speed = 0.0
 
     print(blackboard)
 
-    time.sleep(2)
+    time.sleep(1)
     root = create_root()
     root.setup_with_descendants()
 
     i = 0
 
-    while True:
+    for i in range(0, 10, 1):
         try:
             print("\n--------- Tick {0} ---------\n".format(i))
             root.tick_once()
             print("\n")
             print(py_trees.display.unicode_tree(root=root, show_status=True))
-
             i += 1
         except KeyboardInterrupt:
             break

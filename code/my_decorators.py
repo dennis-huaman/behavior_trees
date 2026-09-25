@@ -1,5 +1,6 @@
 import time
 import py_trees
+import py_trees.decorators
 import random
 
 
@@ -97,13 +98,23 @@ def create_root() -> py_trees.behaviour.Behaviour:
 
     root = py_trees.composites.Selector(name="Selector", memory=True)
     node1 = BTAction1(name="Action 1")
-    root.add_child(node1)
+    # This following line of code, puts a inverter decorator on the node1, that means that whenever the node1 returns a SUCCESS or a FAILURE status, the decorator will send a FAILURE or SUCCESS status in that order.
+    inverterNode1 = py_trees.decorators.Inverter(name="inverterNode1", child=node1)
+    root.add_child(inverterNode1)
 
     node2 = BTAction2(name="Action 2")
-    root.add_child(node2)
+    # This following line of code, puts a FailureIsSuccess decorator on the node2, this means that when the node2 returns a SUCCESS status, the decorator will invert only that state.
+    failure_is_success = py_trees.decorators.FailureIsSuccess(
+        name="failure_is_success", child=node2
+    )
+    root.add_child(failure_is_success)
 
     node3 = BTAction3(name="Action 3")
-    root.add_child(node3)
+    # This following line of code, puts a SuccessIsFailure decorator on the node3, this means that when the node3 returns a FAILURE status, the decorator will invert only that state.
+    success_is_failure = py_trees.decorators.SuccessIsFailure(
+        name="success_is_failure", child=node3
+    )
+    root.add_child(success_is_failure)
 
     return root
 
